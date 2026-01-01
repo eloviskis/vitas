@@ -11,7 +11,7 @@ if [ -z "$1" ]; then
 fi
 
 ISSUE_NUM=$1
-REPO="eloviskis/vigas"  # Repositório técnico - Projeto VITAS
+REPO="eloviskis/Vitas"  # Projeto VITAS
 
 # Buscar título da issue
 ISSUE_TITLE=$(gh issue view $ISSUE_NUM --repo $REPO --json title --jq '.title')
