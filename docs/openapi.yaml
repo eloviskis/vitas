@@ -1,0 +1,760 @@
+openapi: 3.0.3
+info:
+  title: VITAS API
+  description: |
+    API do Super App VITAS - Gerenciamento de vida prática por contextos.
+    
+    ## Autenticação
+    A API usa JWT (JSON Web Tokens) para autenticação. Inclua o token no header:
+    ```
+    Authorization: Bearer <token>
+    ```
+    
+    ## Contextos Suportados
+    - Casa
+    - Vida Digital
+    - Filhos
+    - Pais/Idosos
+    - Transições
+    
+  version: 1.0.0
+  contact:
+    name: Equipe VITAS
+    email: dev@vitas.app
+  license:
+    name: Proprietary
+
+servers:
+  - url: https://api.vitas.app/v1
+    description: Produção
+  - url: https://staging-api.vitas.app/v1
+    description: Staging
+  - url: http://localhost:3000/v1
+    description: Desenvolvimento
+
+tags:
+  - name: Auth
+    description: Autenticação e autorização
+  - name: Usuários
+    description: Gerenciamento de usuários
+  - name: Grupos
+    description: Grupos/famílias
+  - name: Contextos
+    description: Contextos de vida
+  - name: Casos
+    description: Chamados/casos
+  - name: Profissionais
+    description: Profissionais prestadores de serviço
+  - name: Ordens de Serviço
+    description: Ordens de serviço
+  - name: Follow-ups
+    description: Follow-ups pós-serviço
+  - name: Anexos
+    description: Upload e gerenciamento de arquivos
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  schemas:
+    Error:
+      type: object
+      properties:
+        error:
+          type: string
+        message:
+          type: string
+        statusCode:
+          type: integer
+
+    Usuario:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        email:
+          type: string
+          format: email
+        nome:
+          type: string
+        telefone:
+          type: string
+        foto_url:
+          type: string
+          format: uri
+        tipo:
+          type: string
+          enum: [cliente, profissional, operador, admin]
+        status:
+          type: string
+          enum: [ativo, inativo, bloqueado, pendente_verificacao]
+        criado_em:
+          type: string
+          format: date-time
+
+    Grupo:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        nome:
+          type: string
+        descricao:
+          type: string
+        admin_id:
+          type: string
+          format: uuid
+        ativo:
+          type: boolean
+        membros:
+          type: array
+          items:
+            $ref: '#/components/schemas/GrupoMembro'
+
+    GrupoMembro:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        usuario:
+          $ref: '#/components/schemas/Usuario'
+        papel:
+          type: string
+          enum: [admin, membro, visualizador]
+        permissoes:
+          type: object
+
+    Contexto:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        grupo_id:
+          type: string
+          format: uuid
+        tipo:
+          type: string
+          enum: [casa, vida_digital, filhos, pais_idosos, transicoes]
+        nome:
+          type: string
+        descricao:
+          type: string
+        metadados:
+          type: object
+        ativo:
+          type: boolean
+
+    Caso:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        contexto_id:
+          type: string
+          format: uuid
+        usuario_id:
+          type: string
+          format: uuid
+        titulo:
+          type: string
+        descricao:
+          type: string
+        tipo_problema:
+          type: string
+        urgencia:
+          type: string
+          enum: [baixa, media, alta, critica]
+        status:
+          type: string
+          enum: [novo, triagem, proposta, agendado, em_execucao, concluido, cancelado, reaberto]
+        orcamento_maximo:
+          type: number
+          format: decimal
+        disponibilidade:
+          type: object
+        tags:
+          type: array
+          items:
+            type: string
+        criado_em:
+          type: string
+          format: date-time
+
+    Profissional:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        usuario:
+          $ref: '#/components/schemas/Usuario'
+        especialidades:
+          type: array
+          items:
+            type: string
+        regioes_atendimento:
+          type: object
+        disponibilidade:
+          type: object
+        preco_base:
+          type: number
+          format: decimal
+        score:
+          type: number
+          format: decimal
+        total_servicos:
+          type: integer
+        verificado:
+          type: boolean
+
+    OrdemServico:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        caso_id:
+          type: string
+          format: uuid
+        profissional_id:
+          type: string
+          format: uuid
+        data_agendada:
+          type: string
+          format: date-time
+        status:
+          type: string
+          enum: [agendada, em_andamento, concluida, cancelada]
+        valor_acordado:
+          type: number
+          format: decimal
+        valor_final:
+          type: number
+          format: decimal
+        avaliacao_nota:
+          type: integer
+          minimum: 1
+          maximum: 5
+        avaliacao_comentario:
+          type: string
+        garantia_ate:
+          type: string
+          format: date
+
+    FollowUp:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        os_id:
+          type: string
+          format: uuid
+        tipo:
+          type: string
+          enum: [d_7, d_30, d_90]
+        data_prevista:
+          type: string
+          format: date
+        respondido:
+          type: boolean
+        satisfeito:
+          type: boolean
+        problema_persistiu:
+          type: boolean
+
+security:
+  - bearerAuth: []
+
+paths:
+  /auth/register:
+    post:
+      tags: [Auth]
+      summary: Registrar novo usuário
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [email, senha, nome]
+              properties:
+                email:
+                  type: string
+                  format: email
+                senha:
+                  type: string
+                  minLength: 8
+                nome:
+                  type: string
+                telefone:
+                  type: string
+      responses:
+        '201':
+          description: Usuário criado
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  usuario:
+                    $ref: '#/components/schemas/Usuario'
+                  token:
+                    type: string
+        '400':
+          description: Dados inválidos
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /auth/login:
+    post:
+      tags: [Auth]
+      summary: Login
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [email, senha]
+              properties:
+                email:
+                  type: string
+                senha:
+                  type: string
+      responses:
+        '200':
+          description: Login bem-sucedido
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  usuario:
+                    $ref: '#/components/schemas/Usuario'
+                  token:
+                    type: string
+        '401':
+          description: Credenciais inválidas
+
+  /usuarios/me:
+    get:
+      tags: [Usuários]
+      summary: Obter usuário autenticado
+      responses:
+        '200':
+          description: Dados do usuário
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Usuario'
+
+  /grupos:
+    get:
+      tags: [Grupos]
+      summary: Listar grupos do usuário
+      responses:
+        '200':
+          description: Lista de grupos
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Grupo'
+    
+    post:
+      tags: [Grupos]
+      summary: Criar grupo
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [nome]
+              properties:
+                nome:
+                  type: string
+                descricao:
+                  type: string
+      responses:
+        '201':
+          description: Grupo criado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Grupo'
+
+  /grupos/{grupoId}/membros:
+    post:
+      tags: [Grupos]
+      summary: Adicionar membro ao grupo
+      parameters:
+        - name: grupoId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [email]
+              properties:
+                email:
+                  type: string
+                papel:
+                  type: string
+                  enum: [admin, membro, visualizador]
+                permissoes:
+                  type: object
+      responses:
+        '201':
+          description: Membro adicionado
+
+  /contextos:
+    get:
+      tags: [Contextos]
+      summary: Listar contextos
+      parameters:
+        - name: grupo_id
+          in: query
+          schema:
+            type: string
+            format: uuid
+        - name: tipo
+          in: query
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Lista de contextos
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Contexto'
+
+    post:
+      tags: [Contextos]
+      summary: Criar contexto
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [grupo_id, tipo, nome]
+              properties:
+                grupo_id:
+                  type: string
+                  format: uuid
+                tipo:
+                  type: string
+                nome:
+                  type: string
+                descricao:
+                  type: string
+                metadados:
+                  type: object
+      responses:
+        '201':
+          description: Contexto criado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Contexto'
+
+  /casos:
+    get:
+      tags: [Casos]
+      summary: Listar casos
+      parameters:
+        - name: contexto_id
+          in: query
+          schema:
+            type: string
+        - name: status
+          in: query
+          schema:
+            type: string
+        - name: page
+          in: query
+          schema:
+            type: integer
+            default: 1
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            default: 20
+      responses:
+        '200':
+          description: Lista de casos
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Caso'
+                  meta:
+                    type: object
+                    properties:
+                      total:
+                        type: integer
+                      page:
+                        type: integer
+                      limit:
+                        type: integer
+
+    post:
+      tags: [Casos]
+      summary: Criar caso (chamado)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [contexto_id, titulo, descricao]
+              properties:
+                contexto_id:
+                  type: string
+                  format: uuid
+                titulo:
+                  type: string
+                descricao:
+                  type: string
+                tipo_problema:
+                  type: string
+                urgencia:
+                  type: string
+                orcamento_maximo:
+                  type: number
+                disponibilidade:
+                  type: object
+      responses:
+        '201':
+          description: Caso criado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Caso'
+
+  /casos/{casoId}:
+    get:
+      tags: [Casos]
+      summary: Obter caso por ID
+      parameters:
+        - name: casoId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Detalhes do caso
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Caso'
+
+    patch:
+      tags: [Casos]
+      summary: Atualizar caso
+      parameters:
+        - name: casoId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                status:
+                  type: string
+                descricao:
+                  type: string
+      responses:
+        '200':
+          description: Caso atualizado
+
+  /profissionais:
+    get:
+      tags: [Profissionais]
+      summary: Buscar profissionais
+      parameters:
+        - name: especialidade
+          in: query
+          schema:
+            type: string
+        - name: regiao
+          in: query
+          schema:
+            type: string
+        - name: score_min
+          in: query
+          schema:
+            type: number
+      responses:
+        '200':
+          description: Lista de profissionais
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Profissional'
+
+  /ordens-servico:
+    post:
+      tags: [Ordens de Serviço]
+      summary: Criar ordem de serviço
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [caso_id, profissional_id, data_agendada]
+              properties:
+                caso_id:
+                  type: string
+                  format: uuid
+                profissional_id:
+                  type: string
+                  format: uuid
+                data_agendada:
+                  type: string
+                  format: date-time
+                valor_acordado:
+                  type: number
+      responses:
+        '201':
+          description: OS criada
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OrdemServico'
+
+  /ordens-servico/{osId}/avaliar:
+    post:
+      tags: [Ordens de Serviço]
+      summary: Avaliar ordem de serviço
+      parameters:
+        - name: osId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [avaliacao_nota]
+              properties:
+                avaliacao_nota:
+                  type: integer
+                  minimum: 1
+                  maximum: 5
+                avaliacao_comentario:
+                  type: string
+      responses:
+        '200':
+          description: Avaliação registrada
+
+  /followups/{followupId}/responder:
+    post:
+      tags: [Follow-ups]
+      summary: Responder follow-up
+      parameters:
+        - name: followupId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [satisfeito, problema_persistiu]
+              properties:
+                satisfeito:
+                  type: boolean
+                problema_persistiu:
+                  type: boolean
+                comentario:
+                  type: string
+      responses:
+        '200':
+          description: Resposta registrada
+
+  /anexos/upload:
+    post:
+      tags: [Anexos]
+      summary: Upload de arquivo
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              required: [arquivo, entidade_tipo, entidade_id]
+              properties:
+                arquivo:
+                  type: string
+                  format: binary
+                entidade_tipo:
+                  type: string
+                  enum: [caso, ordem_servico, followup]
+                entidade_id:
+                  type: string
+                  format: uuid
+                tipo:
+                  type: string
+                  enum: [foto, documento, nota, orcamento]
+      responses:
+        '201':
+          description: Arquivo enviado
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    format: uuid
+                  url:
+                    type: string
+                    format: uri
