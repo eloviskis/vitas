@@ -1,5 +1,7 @@
 # Guia de Workflow - Projeto VITAS
 
+> **Nota**: O repositório técnico é `eloviskis/vigas`, mas o projeto é chamado **VITAS**.
+
 ## Padrão de Nomes de Branches
 
 ### Formato Recomendado
