@@ -9,6 +9,8 @@ import { Home } from './pages/Home';
 import { Profile } from './pages/Profile';
 import { Cases } from './pages/Cases';
 import { Groups } from './pages/Groups';
+import Casa from './pages/Casa';
+import NovoChamado from './pages/NovoChamado';
 import { NotFound } from './pages/NotFound';
 
 const queryClient = new QueryClient({
@@ -42,6 +44,8 @@ function App() {
               <Route path="cases" element={<Cases />} />
               <Route path="groups" element={<Groups />} />
               <Route path="profile" element={<Profile />} />
+              <Route path="contexto/casa" element={<Casa />} />
+              <Route path="chamado/novo" element={<NovoChamado />} />
             </Route>
 
             <Route path="*" element={<NotFound />} />
