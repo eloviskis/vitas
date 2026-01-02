@@ -8,6 +8,7 @@ import { Register } from './pages/Register';
 import { Home } from './pages/Home';
 import { Profile } from './pages/Profile';
 import { Cases } from './pages/Cases';
+import TriagemChamado from "./pages/TriagemChamado";
 import { Groups } from './pages/Groups';
 import Casa from './pages/Casa';
 import NovoChamado from './pages/NovoChamado';
@@ -45,6 +46,7 @@ function App() {
               <Route path="groups" element={<Groups />} />
               <Route path="profile" element={<Profile />} />
               <Route path="contexto/casa" element={<Casa />} />
+              <Route path="chamados/:chamadoId/triagem" element={<TriagemChamado />} />
               <Route path="chamado/novo" element={<NovoChamado />} />
             </Route>
 
