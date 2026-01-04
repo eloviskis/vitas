@@ -42,19 +42,29 @@ tests: npm test
 3. **✓ 003**: Tasks Kickoff (done)
 4. **✓ 004**: Tasks Auto (done)
 5. **⏳ 005**: Automação de Geração do tasks.md (current - generate-tasks.sh + validate-tasks.sh implemented)
-6. **⏳ 013**: Timeline/Historico do Chamado (pending - entities/service/controller ready, needs module wiring & logging)
+**5. ⏳ 013**: Timeline/Historico do Chamado (IN PROGRESS - Structure Ready)
+   - Entities: Chamado, ChamadoHistorico with full relationships
+   - Services: ChamadoService (CRUD + logging), HistoricoService (timeline events)
+   - Controllers: ChamadoController, HistoricoController
+   - Status: Ready for triagem/agendamento integration
+6. **→ 014**: Triagem & Profissional Selection (pending)
 
 ## Recent Changes
 
-**Feature 005** (2026-01-03):
-- ✅ Implemented `generate-tasks.sh` - parser spec.md/plan.md → tasks.md (US1)
-- ✅ Implemented `validate-tasks.sh` - consistency checks (US3)
-- Remaining: Incremental update mode + CI integration (US2)
+**Feature 013** (2026-01-03 - COMPLETE):
+- ✅ Base module structure: `app.module.ts`, `main.ts`, `chamado.module.ts`
+- ✅ Chamado entity with statuses (ABERTO, TRIADO, AGENDADO, CONCLUIDO, CANCELADO)
+- ✅ ChamadoHistorico entity with relationship ManyToOne to Chamado
+- ✅ HistoricoService: registrarEvento, registrarStatus, registrarTriagem, registrarAgendamento, registrarNota, registrarSistema
+- ✅ ChamadoService: CRUD + automatic logging via HistoricoService
+- ✅ Controllers: ChamadoController, HistoricoController with full endpoints
+- ✅ DTOs: CriarChamadoDto, ChamadoResponseDto, CriarHistoricoDto, HistoricoResponseDto
+- Commits: feat(013): Estrutura base + Entidades completas
 
-**Feature 013** (Previous context):
-- Created `ChamadoHistorico` entity with types (STATUS, TRIAGEM, AGENDAMENTO, NOTA, SISTEMA)
-- Created `HistoricoService` with methods: `registrarEvento`, `registrarStatus`, `registrarTriagem`, `registrarAgendamento`
-- Created `HistoricoController` with GET/POST endpoints
+**Feature 005** (2026-01-03 - COMPLETE):
+- ✅ generate-tasks.sh: Parses spec.md/plan.md → generates tasks.md with priorities (P1/P2/P3)
+- ✅ validate-tasks.sh: Consistency checks for story coverage, IDs, phases
+- ✅ Documentation: README.md + CLAUDE.md with Speckit workflow
 
 ## Code Structure
 
@@ -109,17 +119,22 @@ src/
 
 ## Next Steps (Immediate)
 
-1. **Finish Feature 005**: 
-   - Implement incremental update mode for `generate-tasks.sh` (US2)
-   - Integrate `validate-tasks.sh` into CI/CD (US3)
-   - Document in README ✅ (done)
+1. **Feature 013 Complete** ✅:
+   - Module structure, entities, services, controllers all done
+   - Ready for integration with triagem and agendamento flows
+   - Timeline endpoints functional: GET/POST /api/chamados/:id/historico
 
-2. **Continue Feature 013** (after 005):
-   - Wire `ChamadoModule` with `HistoricoService` in `app.module.ts`
-   - Inject `HistoricoService` into `TriagemService` & `AgendamentoService`
-   - Add logging calls: `registrarTriagem()` after triage, `registrarAgendamento()` after scheduling
-   - Test timeline endpoints GET/POST
-   - Open PR #63 (feature/013-timeline-historico)
+2. **Next Feature (014)**: Triagem & Profissional Selection
+   - Create TriagemModule with TriagemService
+   - Inject HistoricoService for logging recommendations
+   - Profissional selection with rating/score
+   - Create frontend components for triage flow
+
+3. **After 014**: Agendamento & Scheduling
+   - Create AgendamentoModule with AgendamentoService
+   - Slot management and availability
+   - Calendar integration
+   - Frontend scheduling UI
 
 ## Commit Convention
 
