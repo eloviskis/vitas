@@ -1,7 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { ChamadoHistorico, ChamadoHistoricoTipo } from '../entities/chamado-historico.entity';
+import {
+  ChamadoHistorico,
+  ChamadoHistoricoTipo,
+} from '../entities/chamado-historico.entity';
 import { CriarHistoricoDto } from '../dtos/historico.dto';
 
 @Injectable()
@@ -11,7 +14,10 @@ export class HistoricoService {
     private historicoRepository: Repository<ChamadoHistorico>,
   ) {}
 
-  async registrarEvento(chamadoId: string, dto: CriarHistoricoDto): Promise<ChamadoHistorico> {
+  async registrarEvento(
+    chamadoId: string,
+    dto: CriarHistoricoDto,
+  ): Promise<ChamadoHistorico> {
     const evento = this.historicoRepository.create({
       chamadoId,
       ...dto,
@@ -62,4 +68,29 @@ export class HistoricoService {
       metadata,
     });
   }
+
+  async registrarNota(
+    chamadoId: string,
+    descricao: string,
+    metadata?: Record<string, any>,
+  ): Promise<ChamadoHistorico> {
+    return this.registrarEvento(chamadoId, {
+      tipo: ChamadoHistoricoTipo.NOTA,
+      descricao,
+      metadata,
+    });
+  }
+
+  async registrarSistema(
+    chamadoId: string,
+    descricao: string,
+    metadata?: Record<string, any>,
+  ): Promise<ChamadoHistorico> {
+    return this.registrarEvento(chamadoId, {
+      tipo: ChamadoHistoricoTipo.SISTEMA,
+      descricao,
+      metadata,
+    });
+  }
 }
+

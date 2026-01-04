@@ -1,4 +1,12 @@
-import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  CreateDateColumn,
+  Entity,
+  ManyToOne,
+  PrimaryGeneratedColumn,
+  JoinColumn,
+} from 'typeorm';
+import { Chamado } from './chamado.entity';
 
 export enum ChamadoHistoricoTipo {
   STATUS = 'STATUS',
@@ -27,4 +35,13 @@ export class ChamadoHistorico {
 
   @CreateDateColumn({ name: 'criado_em' })
   criadoEm: Date;
+
+  // Relations
+  @ManyToOne(() => Chamado, (chamado) => chamado.historico, {
+    onDelete: 'CASCADE',
+    eager: false,
+  })
+  @JoinColumn({ name: 'chamado_id' })
+  chamado?: Chamado;
 }
+

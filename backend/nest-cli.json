@@ -1,0 +1,21 @@
+{
+  "name": "vitas",
+  "version": "0.0.1",
+  "description": "VITAS - Super app for practical life management",
+  "private": true,
+  "workspaces": [
+    "backend",
+    "frontend"
+  ],
+  "scripts": {
+    "setup": "npm install",
+    "dev": "npm run dev --workspaces",
+    "build": "npm run build --workspaces",
+    "test": "npm run test --workspaces",
+    "backend": "npm run dev -w backend",
+    "frontend": "npm run dev -w frontend"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  }
+}

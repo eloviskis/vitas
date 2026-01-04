@@ -17,3 +17,13 @@ export class CriarHistoricoDto {
   @IsObject()
   metadata?: Record<string, any>;
 }
+
+export class HistoricoResponseDto {
+  id: string;
+  chamadoId: string;
+  tipo: ChamadoHistoricoTipo;
+  descricao?: string;
+  metadata?: Record<string, any>;
+  criadoEm: Date;
+}
+
