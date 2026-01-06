@@ -1,0 +1,40 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "VITAS API",
+    "description": "API REST para gestão de chamados de manutenção doméstica",
+    "version": "1.0.0",
+    "contact": {
+      "name": "VITAS Support",
+      "url": "https://github.com/eloviskis/vitas"
+    }
+  },
+  "servers": [
+    { "url": "http://localhost:3000", "description": "Desenvolvimento" },
+    { "url": "https://api.vitas.com", "description": "Produção" }
+  ],
+  "paths": {
+    "/api/auth/login": {
+      "post": {
+        "tags": ["Autenticação"],
+        "summary": "Autenticar usuário",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "email": { "type": "string" },
+                  "password": { "type": "string" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "Login bem-sucedido" }
+        }
+      }
+    }
+  }
+}

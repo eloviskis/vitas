@@ -15,6 +15,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.StorageController = void 0;
 const common_1 = require("@nestjs/common");
 const platform_express_1 = require("@nestjs/platform-express");
+const swagger_1 = require("@nestjs/swagger");
 const storage_service_1 = require("./storage.service");
 let StorageController = class StorageController {
     constructor(storageService) {
@@ -52,6 +53,19 @@ let StorageController = class StorageController {
 exports.StorageController = StorageController;
 __decorate([
     (0, common_1.Post)('upload'),
+    (0, swagger_1.ApiOperation)({ summary: 'Upload de arquivo', description: 'Faz upload de foto, vídeo ou documento (max 10MB)' }),
+    (0, swagger_1.ApiConsumes)('multipart/form-data'),
+    (0, swagger_1.ApiBody)({
+        schema: {
+            type: 'object',
+            properties: {
+                file: { type: 'string', format: 'binary' },
+                folder: { type: 'string', description: 'Pasta destino (ex: chamados, documentos)' }
+            }
+        }
+    }),
+    (0, swagger_1.ApiResponse)({ status: 200, description: 'Arquivo enviado com sucesso', schema: { example: { url: 'https://...', key: 'chamados/uuid.jpg' } } }),
+    (0, swagger_1.ApiResponse)({ status: 400, description: 'Arquivo inválido (tamanho ou tipo)' }),
     (0, common_1.UseInterceptors)((0, platform_express_1.FileInterceptor)('file')),
     __param(0, (0, common_1.UploadedFile)()),
     __param(1, (0, common_1.Query)('folder')),
@@ -60,6 +74,7 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], StorageController.prototype, "uploadFile", null);
 exports.StorageController = StorageController = __decorate([
+    (0, swagger_1.ApiTags)('Armazenamento'),
     (0, common_1.Controller)('storage'),
     __metadata("design:paramtypes", [storage_service_1.StorageService])
 ], StorageController);

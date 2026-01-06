@@ -61,6 +61,9 @@ let ChamadoController = class ChamadoController {
 exports.ChamadoController = ChamadoController;
 __decorate([
     (0, common_1.Post)(),
+    (0, swagger_1.ApiOperation)({ summary: 'Criar novo chamado', description: 'Cria um novo chamado de manutenção' }),
+    (0, swagger_1.ApiResponse)({ status: 201, description: 'Chamado criado com sucesso' }),
+    (0, swagger_1.ApiResponse)({ status: 401, description: 'Não autenticado' }),
     __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [chamado_dto_1.CriarChamadoDto]),
@@ -68,6 +71,8 @@ __decorate([
 ], ChamadoController.prototype, "criar", null);
 __decorate([
     (0, common_1.Get)('all'),
+    (0, swagger_1.ApiOperation)({ summary: 'Listar todos os chamados' }),
+    (0, swagger_1.ApiResponse)({ status: 200, description: 'Lista de chamados retornada' }),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", []),
     __metadata("design:returntype", Promise)
@@ -81,6 +86,9 @@ __decorate([
 ], ChamadoController.prototype, "listarPorUsuario", null);
 __decorate([
     (0, common_1.Get)(':id'),
+    (0, swagger_1.ApiOperation)({ summary: 'Obter chamado por ID' }),
+    (0, swagger_1.ApiResponse)({ status: 200, description: 'Chamado encontrado' }),
+    (0, swagger_1.ApiResponse)({ status: 404, description: 'Chamado não encontrado' }),
     __param(0, (0, common_1.Param)('id')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String]),
@@ -103,6 +111,7 @@ __decorate([
 ], ChamadoController.prototype, "deletar", null);
 exports.ChamadoController = ChamadoController = __decorate([
     (0, swagger_1.ApiTags)('Chamados'),
+    (0, swagger_1.ApiBearerAuth)(),
     (0, common_1.Controller)('chamados'),
     (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
     __metadata("design:paramtypes", [chamado_service_1.ChamadoService])

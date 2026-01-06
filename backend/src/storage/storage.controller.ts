@@ -7,13 +7,28 @@ import {
   Query,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
+import { ApiTags, ApiOperation, ApiResponse, ApiConsumes, ApiBody } from '@nestjs/swagger';
 import { StorageService } from './storage.service';
 
+@ApiTags('Armazenamento')
 @Controller('storage')
 export class StorageController {
   constructor(private storageService: StorageService) {}
 
   @Post('upload')
+  @ApiOperation({ summary: 'Upload de arquivo', description: 'Faz upload de foto, vídeo ou documento (max 10MB)' })
+  @ApiConsumes('multipart/form-data')
+  @ApiBody({
+    schema: {
+      type: 'object',
+      properties: {
+        file: { type: 'string', format: 'binary' },
+        folder: { type: 'string', description: 'Pasta destino (ex: chamados, documentos)' }
+      }
+    }
+  })
+  @ApiResponse({ status: 200, description: 'Arquivo enviado com sucesso', schema: { example: { url: 'https://...', key: 'chamados/uuid.jpg' } } })
+  @ApiResponse({ status: 400, description: 'Arquivo inválido (tamanho ou tipo)' })
   @UseInterceptors(FileInterceptor('file'))
   async uploadFile(
     @UploadedFile() file: Express.Multer.File,

@@ -8,7 +8,7 @@ import {
   Put,
   UseGuards,
 } from '@nestjs/common';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth } from '@nestjs/swagger';
 import { JwtAuthGuard } from '../../auth/guards/jwt-auth.guard';
 import { ChamadoService } from '../services/chamado.service';
 import {
@@ -18,18 +18,24 @@ import {
 } from '../dtos/chamado.dto';
 
 @ApiTags('Chamados')
+@ApiBearerAuth()
 @Controller('chamados')
 @UseGuards(JwtAuthGuard)
 export class ChamadoController {
   constructor(private readonly chamadoService: ChamadoService) {}
 
   @Post()
+  @ApiOperation({ summary: 'Criar novo chamado', description: 'Cria um novo chamado de manutenção' })
+  @ApiResponse({ status: 201, description: 'Chamado criado com sucesso' })
+  @ApiResponse({ status: 401, description: 'Não autenticado' })
   async criar(@Body() dto: CriarChamadoDto): Promise<ChamadoResponseDto> {
     const chamado = await this.chamadoService.criar(dto);
     return this.mapToResponse(chamado);
   }
 
   @Get('all')
+  @ApiOperation({ summary: 'Listar todos os chamados' })
+  @ApiResponse({ status: 200, description: 'Lista de chamados retornada' })
   async listarTodos(): Promise<ChamadoResponseDto[]> {
     const chamados = await this.chamadoService.listarTodos();
     return chamados.map((c) => this.mapToResponse(c));
@@ -44,6 +50,9 @@ export class ChamadoController {
   }
 
   @Get(':id')
+  @ApiOperation({ summary: 'Obter chamado por ID' })
+  @ApiResponse({ status: 200, description: 'Chamado encontrado' })
+  @ApiResponse({ status: 404, description: 'Chamado não encontrado' })
   async obter(@Param('id') id: string): Promise<ChamadoResponseDto> {
     const chamado = await this.chamadoService.obterPorId(id);
     return this.mapToResponse(chamado);

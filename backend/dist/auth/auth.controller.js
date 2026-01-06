@@ -14,6 +14,7 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.AuthController = void 0;
 const common_1 = require("@nestjs/common");
+const swagger_1 = require("@nestjs/swagger");
 const auth_service_1 = require("./auth.service");
 const register_dto_1 = require("./dto/register.dto");
 const login_dto_1 = require("./dto/login.dto");
@@ -37,12 +38,20 @@ let AuthController = class AuthController {
 exports.AuthController = AuthController;
 __decorate([
     (0, common_1.Get)('test'),
+    (0, swagger_1.ApiOperation)({ summary: 'Testar conectividade da API' }),
+    (0, swagger_1.ApiResponse)({ status: 200, description: 'API está funcionando' }),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", []),
     __metadata("design:returntype", void 0)
 ], AuthController.prototype, "test", null);
 __decorate([
     (0, common_1.Post)('login'),
+    (0, swagger_1.ApiOperation)({ summary: 'Autenticar usuário', description: 'Realiza login e retorna token JWT' }),
+    (0, swagger_1.ApiResponse)({ status: 200, description: 'Login bem-sucedido', schema: { example: { token: 'eyJhbGc...', user: { id: 1, email: 'user@example.com', role: 'cliente' } } } }),
+    (0, swagger_1.ApiResponse)({ status: 401, description: 'Credenciais inválidas' }),
+    (0, swagger_1.ApiOperation)({ summary: 'Registrar novo usuário', description: 'Cria nova conta de cliente, profissional ou admin' }),
+    (0, swagger_1.ApiResponse)({ status: 201, description: 'Usuário criado com sucesso' }),
+    (0, swagger_1.ApiResponse)({ status: 400, description: 'Email já cadastrado ou dados inválidos' }),
     __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [login_dto_1.LoginDto]),
@@ -50,6 +59,9 @@ __decorate([
 ], AuthController.prototype, "login", null);
 __decorate([
     (0, common_1.Post)('register'),
+    (0, swagger_1.ApiOperation)({ summary: 'Registrar novo usuário', description: 'Cria nova conta de cliente, profissional ou admin' }),
+    (0, swagger_1.ApiResponse)({ status: 201, description: 'Usuário criado com sucesso' }),
+    (0, swagger_1.ApiResponse)({ status: 400, description: 'Email já cadastrado ou dados inválidos' }),
     __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [register_dto_1.RegisterDto]),
@@ -57,11 +69,15 @@ __decorate([
 ], AuthController.prototype, "register", null);
 __decorate([
     (0, common_1.Post)('logout'),
+    (0, swagger_1.ApiBearerAuth)(),
+    (0, swagger_1.ApiOperation)({ summary: 'Encerrar sessão', description: 'Invalida o token JWT atual' }),
+    (0, swagger_1.ApiResponse)({ status: 200, description: 'Logout realizado' }),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", []),
     __metadata("design:returntype", Promise)
 ], AuthController.prototype, "logout", null);
 exports.AuthController = AuthController = __decorate([
+    (0, swagger_1.ApiTags)('Autenticação'),
     (0, common_1.Controller)('auth'),
     __metadata("design:paramtypes", [auth_service_1.AuthService])
 ], AuthController);

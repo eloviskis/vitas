@@ -14,6 +14,7 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.NotificationController = void 0;
 const common_1 = require("@nestjs/common");
+const swagger_1 = require("@nestjs/swagger");
 const notification_service_1 = require("./notification.service");
 class SendNotificationDto {
 }
@@ -72,6 +73,9 @@ let NotificationController = class NotificationController {
 exports.NotificationController = NotificationController;
 __decorate([
     (0, common_1.Post)('send'),
+    (0, swagger_1.ApiOperation)({ summary: 'Enviar notificação para um dispositivo', description: 'Envia push notification para um token FCM específico' }),
+    (0, swagger_1.ApiResponse)({ status: 200, description: 'Notificação enviada' }),
+    (0, swagger_1.ApiResponse)({ status: 400, description: 'Token inválido ou Firebase não configurado' }),
     __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [SendNotificationDto]),
@@ -92,6 +96,8 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], NotificationController.prototype, "sendToTopic", null);
 exports.NotificationController = NotificationController = __decorate([
+    (0, swagger_1.ApiTags)('Notificações'),
+    (0, swagger_1.ApiBearerAuth)(),
     (0, common_1.Controller)('notifications'),
     __metadata("design:paramtypes", [notification_service_1.NotificationService])
 ], NotificationController);

@@ -1,4 +1,5 @@
 import { Controller, Post, Body } from '@nestjs/common';
+import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth } from '@nestjs/swagger';
 import { NotificationService, NotificationPayload } from './notification.service';
 
 class SendNotificationDto {
@@ -25,11 +26,16 @@ class SendToTopicDto {
   imageUrl?: string;
 }
 
+@ApiTags('Notificações')
+@ApiBearerAuth()
 @Controller('notifications')
 export class NotificationController {
   constructor(private notificationService: NotificationService) {}
 
   @Post('send')
+  @ApiOperation({ summary: 'Enviar notificação para um dispositivo', description: 'Envia push notification para um token FCM específico' })
+  @ApiResponse({ status: 200, description: 'Notificação enviada' })
+  @ApiResponse({ status: 400, description: 'Token inválido ou Firebase não configurado' })
   async sendNotification(@Body() dto: SendNotificationDto) {
     const payload: NotificationPayload = {
       title: dto.title,
