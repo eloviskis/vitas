@@ -11,7 +11,7 @@ if [ -z "$1" ]; then
 fi
 
 ISSUE_NUM=$1
-REPO="eloviskis/vigas"  # Repositório técnico - Projeto VITAS
+REPO="eloviskis/Vitas"  # Projeto VITAS
 
 # Buscar título da issue se não foi fornecido
 if [ -z "$2" ]; then
