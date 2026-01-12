@@ -106,7 +106,7 @@ __decorate([
     __metadata("design:type", String)
 ], Profissional.prototype, "verificadoPor", void 0);
 __decorate([
-    (0, typeorm_1.Column)({ type: 'datetime', nullable: true }),
+    (0, typeorm_1.Column)({ type: 'timestamp', nullable: true }),
     __metadata("design:type", Date)
 ], Profissional.prototype, "dataVerificacao", void 0);
 __decorate([

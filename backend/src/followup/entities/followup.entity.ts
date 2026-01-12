@@ -55,9 +55,9 @@ export class Followup {
   @CreateDateColumn()
   criadoEm: Date;
 
-  @Column({ type: 'datetime', nullable: true })
+  @Column({ type: 'timestamp', nullable: true })
   dataEnvio?: Date;
 
-  @Column({ type: 'datetime', nullable: true })
+  @Column({ type: 'timestamp', nullable: true })
   dataResposta?: Date;
 }

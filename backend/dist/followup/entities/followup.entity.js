@@ -80,11 +80,11 @@ __decorate([
     __metadata("design:type", Date)
 ], Followup.prototype, "criadoEm", void 0);
 __decorate([
-    (0, typeorm_1.Column)({ type: 'datetime', nullable: true }),
+    (0, typeorm_1.Column)({ type: 'timestamp', nullable: true }),
     __metadata("design:type", Date)
 ], Followup.prototype, "dataEnvio", void 0);
 __decorate([
-    (0, typeorm_1.Column)({ type: 'datetime', nullable: true }),
+    (0, typeorm_1.Column)({ type: 'timestamp', nullable: true }),
     __metadata("design:type", Date)
 ], Followup.prototype, "dataResposta", void 0);
 exports.Followup = Followup = __decorate([
