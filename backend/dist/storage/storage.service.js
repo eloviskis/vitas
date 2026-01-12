@@ -55,7 +55,7 @@ let StorageService = class StorageService {
         this.configService = configService;
         this.useS3 = this.configService.get('STORAGE_TYPE') === 's3';
         this.bucketName = this.configService.get('S3_BUCKET_NAME') || '';
-        this.localStoragePath = this.configService.get('LOCAL_STORAGE_PATH') || './uploads';
+        this.localStoragePath = this.configService.get('STORAGE_LOCAL_PATH') || './uploads';
         if (this.useS3) {
             this.s3Client = new client_s3_1.S3Client({
                 region: this.configService.get('AWS_REGION') || 'us-east-1',

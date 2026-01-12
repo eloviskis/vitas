@@ -19,7 +19,7 @@ export class RelatorioFinanceiroController {
   }
 
   @Get('diarias')
-  async metricas Diarias(
+  async metricasDiarias(
     @Query('dataInicio') dataInicio: string,
     @Query('dataFim') dataFim: string,
   ) {

@@ -24,6 +24,10 @@ var AgendamentoStatus;
     AgendamentoStatus["NAOCOMPARECEU"] = "NAOCOMPARECEU";
 })(AgendamentoStatus || (exports.AgendamentoStatus = AgendamentoStatus = {}));
 let Agendamento = class Agendamento {
+    // Alias para compatibilidade
+    get dataAgendamento() {
+        return this.dataHora;
+    }
 };
 exports.Agendamento = Agendamento;
 __decorate([
@@ -70,6 +74,10 @@ __decorate([
     (0, typeorm_1.Column)({ type: 'text', nullable: true }),
     __metadata("design:type", String)
 ], Agendamento.prototype, "motivoCancelamento", void 0);
+__decorate([
+    (0, typeorm_1.Column)({ type: 'varchar', nullable: true }),
+    __metadata("design:type", String)
+], Agendamento.prototype, "canceladoPor", void 0);
 __decorate([
     (0, typeorm_1.Column)({ nullable: true }),
     __metadata("design:type", Date)

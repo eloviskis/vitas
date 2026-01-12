@@ -21,6 +21,7 @@ export declare class Pagamento {
     profissional: Profissional;
     profissionalId: number;
     valorTotal: number;
+    get valor(): number;
     valorProfissional: number;
     valorPlataforma: number;
     status: StatusPagamento;
@@ -38,4 +39,5 @@ export declare class Pagamento {
     motivoCancelamento: string;
     criadoEm: Date;
     atualizadoEm: Date;
+    get createdAt(): Date;
 }

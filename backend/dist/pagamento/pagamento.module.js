@@ -13,6 +13,8 @@ const pagamento_entity_1 = require("./entities/pagamento.entity");
 const orcamento_entity_1 = require("../orcamento/entities/orcamento.entity");
 const pagamento_service_1 = require("./services/pagamento.service");
 const pagamento_controller_1 = require("./controllers/pagamento.controller");
+const relatorio_financeiro_service_1 = require("./services/relatorio-financeiro.service");
+const relatorio_financeiro_controller_1 = require("./controllers/relatorio-financeiro.controller");
 let PagamentoModule = class PagamentoModule {
 };
 exports.PagamentoModule = PagamentoModule;
@@ -21,8 +23,8 @@ exports.PagamentoModule = PagamentoModule = __decorate([
         imports: [
             typeorm_1.TypeOrmModule.forFeature([pagamento_entity_1.Pagamento, orcamento_entity_1.Orcamento]),
         ],
-        controllers: [pagamento_controller_1.PagamentoController],
-        providers: [pagamento_service_1.PagamentoService],
+        controllers: [pagamento_controller_1.PagamentoController, relatorio_financeiro_controller_1.RelatorioFinanceiroController],
+        providers: [pagamento_service_1.PagamentoService, relatorio_financeiro_service_1.RelatorioFinanceiroService],
         exports: [pagamento_service_1.PagamentoService],
     })
 ], PagamentoModule);

@@ -1,9 +1,12 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { Chamado } from '../chamado/entities/chamado.entity';
+import { Chamado, ChamadoStatus } from '../chamado/entities/chamado.entity';
 import { Orcamento } from '../orcamento/entities/orcamento.entity';
-import { Pagamento } from '../pagamento/entities/pagamento.entity';
+import {
+  Pagamento,
+  StatusPagamento,
+} from '../pagamento/entities/pagamento.entity';
 
 export interface DashboardMetrics {
   chamadosAbertos: number;
@@ -53,22 +56,21 @@ export class MetricsService {
     // Chamados abertos (não concluídos)
     const chamadosAbertos = await this.chamadoRepository.count({
       where: [
-        { status: 'pendente' },
-        { status: 'triado' },
-        { status: 'agendado' },
-        { status: 'em_execucao' },
+        { status: ChamadoStatus.ABERTO },
+        { status: ChamadoStatus.TRIADO },
+        { status: ChamadoStatus.AGENDADO },
       ],
     });
 
     // Chamados em atendimento
     const chamadosEmAtendimento = await this.chamadoRepository.count({
-      where: { status: 'em_execucao' },
+      where: { status: ChamadoStatus.AGENDADO },
     });
 
     // Chamados concluídos (últimos 30 dias)
     const chamadosConcluidos = await this.chamadoRepository.count({
       where: {
-        status: 'concluido',
+        status: ChamadoStatus.CONCLUIDO,
         updatedAt: new Date(thirtyDaysAgo.toISOString().split('T')[0]) as any,
       },
     });
@@ -76,7 +78,7 @@ export class MetricsService {
     // Chamados concluídos (30-60 dias atrás) para comparação
     const concluidosMesAnterior = await this.chamadoRepository.count({
       where: {
-        status: 'concluido',
+        status: ChamadoStatus.CONCLUIDO,
         updatedAt: new Date(sixtyDaysAgo.toISOString().split('T')[0]) as any,
       },
     });
@@ -91,7 +93,7 @@ export class MetricsService {
     // Total de pagamentos efetivados
     const pagamentosEfetivados = await this.pagamentoRepository.count({
       where: {
-        status: 'confirmado',
+        status: StatusPagamento.APROVADO,
         createdAt: new Date(thirtyDaysAgo.toISOString().split('T')[0]) as any,
       },
     });
@@ -110,7 +112,7 @@ export class MetricsService {
 
     const pagamentosMesAnterior = await this.pagamentoRepository.count({
       where: {
-        status: 'confirmado',
+        status: StatusPagamento.APROVADO,
         createdAt: new Date(sixtyDaysAgo.toISOString().split('T')[0]) as any,
       },
     });
@@ -122,7 +124,7 @@ export class MetricsService {
     // Ticket médio (média de valores de pagamentos confirmados)
     const pagamentosConfirmados = await this.pagamentoRepository.find({
       where: {
-        status: 'confirmado',
+        status: StatusPagamento.APROVADO,
         createdAt: new Date(thirtyDaysAgo.toISOString().split('T')[0]) as any,
       },
     });
@@ -133,7 +135,7 @@ export class MetricsService {
 
     const pagamentosConfirmadosMesAnterior = await this.pagamentoRepository.find({
       where: {
-        status: 'confirmado',
+        status: StatusPagamento.APROVADO,
         createdAt: new Date(sixtyDaysAgo.toISOString().split('T')[0]) as any,
       },
     });
@@ -145,10 +147,9 @@ export class MetricsService {
     // Funil de conversão
     const triados = await this.chamadoRepository.count({
       where: [
-        { status: 'triado' },
-        { status: 'agendado' },
-        { status: 'em_execucao' },
-        { status: 'concluido' },
+        { status: ChamadoStatus.TRIADO },
+        { status: ChamadoStatus.AGENDADO },
+        { status: ChamadoStatus.CONCLUIDO },
       ],
     });
 

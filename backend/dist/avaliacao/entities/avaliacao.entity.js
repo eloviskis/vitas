@@ -13,7 +13,16 @@ exports.Avaliacao = void 0;
 const typeorm_1 = require("typeorm");
 const chamado_entity_1 = require("../../chamado/entities/chamado.entity");
 const profissional_entity_1 = require("../../profissional/entities/profissional.entity");
+const user_entity_1 = require("../../auth/entities/user.entity");
 let Avaliacao = class Avaliacao {
+    // Alias para compatibilidade
+    get nota() {
+        return this.notaGeral;
+    }
+    // Alias para compatibilidade
+    get createdAt() {
+        return this.criadoEm;
+    }
 };
 exports.Avaliacao = Avaliacao;
 __decorate([
@@ -42,6 +51,11 @@ __decorate([
     (0, typeorm_1.Column)(),
     __metadata("design:type", String)
 ], Avaliacao.prototype, "clienteId", void 0);
+__decorate([
+    (0, typeorm_1.ManyToOne)(() => user_entity_1.User, { lazy: true }),
+    (0, typeorm_1.JoinColumn)({ name: 'clienteId' }),
+    __metadata("design:type", Promise)
+], Avaliacao.prototype, "cliente", void 0);
 __decorate([
     (0, typeorm_1.Column)({ type: 'integer' }) // 1-5
     ,

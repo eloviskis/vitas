@@ -12,7 +12,7 @@ export declare class AuthService implements OnModuleInit {
         user: {
             id: string;
             email: string;
-            role: "profissional" | "cliente" | "operador" | "admin";
+            role: "cliente" | "profissional" | "operador" | "admin";
             nome: string;
         };
     }>;
@@ -21,7 +21,7 @@ export declare class AuthService implements OnModuleInit {
         user: {
             id: string;
             email: string;
-            role: "profissional" | "cliente" | "operador" | "admin";
+            role: "cliente" | "profissional" | "operador" | "admin";
             nome: string;
         };
     }>;

@@ -21,10 +21,12 @@ export declare class Agendamento {
     confirmadoEm?: Date;
     canceladoEm?: Date;
     motivoCancelamento?: string;
+    canceladoPor?: string;
     inicioAtendimento?: Date;
     fimAtendimento?: Date;
     criadoEm: Date;
     atualizadoEm: Date;
+    get dataAgendamento(): Date;
     chamado?: Chamado;
     profissional?: Profissional;
     slot?: Slot;

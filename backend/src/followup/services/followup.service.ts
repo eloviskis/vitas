@@ -11,10 +11,11 @@ export class FollowupService {
   ) {}
 
   async criar(dto: any): Promise<Followup> {
-    const followup = this.followupRepository.create({
-      ...dto,
-      status: FollowupStatus.PENDENTE,
-    });
+    const followup = new Followup();
+    followup.agendamentoId = dto.agendamentoId;
+    followup.tipo = dto.tipo;
+    followup.mensagem = dto.mensagem;
+    followup.status = FollowupStatus.PENDENTE;
     return await this.followupRepository.save(followup);
   }
 
@@ -49,6 +50,14 @@ export class FollowupService {
   async listarPorAgendamento(agendamentoId: string): Promise<Followup[]> {
     return await this.followupRepository.find({
       where: { agendamentoId },
+      order: { criadoEm: 'DESC' },
+    });
+  }
+
+  async listarPendentes(): Promise<Followup[]> {
+    return await this.followupRepository.find({
+      where: { status: FollowupStatus.PENDENTE },
+      relations: ['agendamento', 'usuario'],
       order: { criadoEm: 'DESC' },
     });
   }

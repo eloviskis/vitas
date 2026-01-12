@@ -83,6 +83,10 @@ __decorate([
     __metadata("design:type", Boolean)
 ], User.prototype, "ativo", void 0);
 __decorate([
+    (0, typeorm_1.Column)({ type: 'varchar', nullable: true }),
+    __metadata("design:type", String)
+], User.prototype, "fcmToken", void 0);
+__decorate([
     (0, typeorm_1.CreateDateColumn)(),
     __metadata("design:type", Date)
 ], User.prototype, "createdAt", void 0);

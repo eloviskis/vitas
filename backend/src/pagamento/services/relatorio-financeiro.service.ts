@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, Between } from 'typeorm';
-import { Pagamento } from '../entities/pagamento.entity';
+import { Pagamento, StatusPagamento } from '../entities/pagamento.entity';
 
 @Injectable()
 export class RelatorioFinanceiroService {
@@ -14,7 +14,7 @@ export class RelatorioFinanceiroService {
     const pagamentos = await this.pagamentoRepository.find({
       where: {
         criadoEm: Between(dataInicio, dataFim),
-        status: 'APROVADO',
+        status: StatusPagamento.APROVADO,
       },
       relations: ['orcamento', 'orcamento.profissional'],
     });
@@ -73,7 +73,7 @@ export class RelatorioFinanceiroService {
     const pagamentos = await this.pagamentoRepository.find({
       where: {
         criadoEm: Between(dataInicio, dataFim),
-        status: 'APROVADO',
+        status: StatusPagamento.APROVADO,
       },
     });
 
@@ -98,7 +98,7 @@ export class RelatorioFinanceiroService {
     const aprovados = await this.pagamentoRepository.count({
       where: {
         criadoEm: Between(dataInicio, dataFim),
-        status: 'APROVADO',
+        status: StatusPagamento.APROVADO,
       },
     });
 

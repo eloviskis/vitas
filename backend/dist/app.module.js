@@ -18,8 +18,11 @@ const auth_module_1 = require("./auth/auth.module");
 const orcamento_module_1 = require("./orcamento/orcamento.module");
 const avaliacao_module_1 = require("./avaliacao/avaliacao.module");
 const pagamento_module_1 = require("./pagamento/pagamento.module");
+const followup_module_1 = require("./followup/followup.module");
 const storage_module_1 = require("./storage/storage.module");
 const notification_module_1 = require("./notification/notification.module");
+const lgpd_module_1 = require("./lgpd/lgpd.module");
+const metrics_module_1 = require("./metrics/metrics.module");
 let AppModule = class AppModule {
 };
 exports.AppModule = AppModule;
@@ -68,6 +71,9 @@ exports.AppModule = AppModule = __decorate([
             orcamento_module_1.OrcamentoModule,
             avaliacao_module_1.AvaliacaoModule,
             pagamento_module_1.PagamentoModule,
+            followup_module_1.FollowupModule,
+            lgpd_module_1.LgpdModule,
+            metrics_module_1.MetricsModule,
         ],
     })
 ], AppModule);

@@ -30,6 +30,14 @@ var MetodoPagamento;
     MetodoPagamento["BOLETO"] = "BOLETO";
 })(MetodoPagamento || (exports.MetodoPagamento = MetodoPagamento = {}));
 let Pagamento = class Pagamento {
+    // Alias para compatibilidade
+    get valor() {
+        return this.valorTotal;
+    }
+    // Alias para compatibilidade
+    get createdAt() {
+        return this.criadoEm;
+    }
 };
 exports.Pagamento = Pagamento;
 __decorate([

@@ -3,7 +3,10 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Profissional } from '../../profissional/entities/profissional.entity';
 import { Avaliacao } from '../../avaliacao/entities/avaliacao.entity';
-import { Agendamento } from '../../agendamento/entities/agendamento.entity';
+import {
+  Agendamento,
+  AgendamentoStatus,
+} from '../../agendamento/entities/agendamento.entity';
 
 export interface ScoreCalculationResult {
   profissional: Profissional;
@@ -117,7 +120,7 @@ export class ScoreRulesService {
     }
 
     const agendamentos = await this.agendamentoRepository.find({
-      where: { profissionalId, status: 'CONCLUIDO' },
+      where: { profissionalId, status: AgendamentoStatus.CONCLUIDO },
       order: { dataAgendamento: 'DESC' },
       take: 50, // Últimos 50 agendamentos
     });
@@ -190,8 +193,12 @@ export class ScoreRulesService {
       penalidade += 15; // Penalidade média se >10%
     }
 
-    // Taxa de rejeições (não aceitos)
-    const rejeitados = agendamentos.filter((a) => a.status === 'REJEITADO');
+    // Taxa de rejeições (cancelados/não compareceu)
+    const rejeitados = agendamentos.filter(
+      (a) =>
+        a.status === AgendamentoStatus.CANCELADO ||
+        a.status === AgendamentoStatus.NAOCOMPARECEU,
+    );
     const taxaRejeicao = rejeitados.length / agendamentos.length;
 
     if (taxaRejeicao > 0.2) {
@@ -248,7 +255,11 @@ export class ScoreRulesService {
       where: { profissionalId },
     });
 
-    const aceitos = agendamentos.filter((a) => a.status !== 'REJEITADO');
+    const aceitos = agendamentos.filter(
+      (a) =>
+        a.status !== AgendamentoStatus.CANCELADO &&
+        a.status !== AgendamentoStatus.NAOCOMPARECEU,
+    );
     const ultimoServico = agendamentos.sort(
       (a, b) =>
         new Date(b.dataAgendamento).getTime() -

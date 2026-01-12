@@ -5,6 +5,7 @@ export declare class User {
     nome: string;
     role: 'cliente' | 'profissional' | 'operador' | 'admin';
     ativo: boolean;
+    fcmToken?: string;
     createdAt: Date;
     updatedAt: Date;
     hashPassword(): Promise<void>;
